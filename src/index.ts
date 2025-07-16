@@ -1,13 +1,12 @@
 import express from 'express';
 
-const app = express();
-const port = '3000';
+import { testDbConnection } from './config/testConnection.js';
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-    console.log('Response sent');
-});
+const app = express();
+const port = 3000;
+
+testDbConnection();
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+    console.log(`Server started at port ${port}`);
 });
