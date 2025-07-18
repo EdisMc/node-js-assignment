@@ -5,7 +5,7 @@ export enum PartnerType {
     CUSTOMER = 'customer',
 }
 
-interface PartnerAttributes {
+export interface PartnerProperties {
     id: string;
     name: string;
     type: PartnerType;
@@ -16,24 +16,10 @@ interface PartnerAttributes {
     modifiedBy: string;
 }
 
-type PartnerCreationAttributes = Optional<
-    PartnerAttributes,
-    'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
->;
-
-export class Partner
-    extends Model<PartnerAttributes, PartnerCreationAttributes>
-    implements PartnerAttributes
-{
-    public id!: string;
-    public name!: string;
-    public type!: PartnerType;
-    public companyId!: string;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-    public readonly deletedAt?: Date;
-    public modifiedBy!: string;
-
+export class Partner extends Model<
+    PartnerProperties,
+    Optional<PartnerProperties, 'id'>
+> {
     public static initModel(sequelize: Sequelize): typeof Partner {
         Partner.init(
             {
@@ -53,19 +39,38 @@ export class Partner
                 companyId: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'companyId',
+                },
+                createdAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'createdAt',
+                },
+                updatedAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'updatedAt',
+                },
+                deletedAt: {
+                    type: DataTypes.DATE,
+                    allowNull: true,
+                    field: 'deletedAt',
                 },
                 modifiedBy: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'modifiedBy',
                 },
             },
             {
                 sequelize,
-                modelName: 'Partner',
                 tableName: 'partners',
+                timestamps: true,
                 paranoid: true,
             },
         );
         return Partner;
     }
 }
+
+export default Partner;

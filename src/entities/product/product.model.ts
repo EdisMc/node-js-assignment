@@ -1,8 +1,8 @@
 import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 
-import { SupportType } from './Warehouse.js';
+import { SupportType } from '../warehouse/warehouse.model.js';
 
-interface ProductAttributes {
+export interface ProductProperties {
     id: string;
     name: string;
     prodType: SupportType;
@@ -15,26 +15,10 @@ interface ProductAttributes {
     modifiedBy: string;
 }
 
-type ProductCreationAttributes = Optional<
-    ProductAttributes,
-    'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
->;
-
-export class Product
-    extends Model<ProductAttributes, ProductCreationAttributes>
-    implements ProductAttributes
-{
-    public id!: string;
-    public name!: string;
-    public prodType!: SupportType;
-    public price!: number;
-    public companyId!: string;
-    public warehouseId!: string;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-    public readonly deletedAt?: Date;
-    public modifiedBy!: string;
-
+export class Product extends Model<
+    ProductProperties,
+    Optional<ProductProperties, 'id'>
+> {
     public static initModel(sequelize: Sequelize): typeof Product {
         Product.init(
             {
@@ -50,6 +34,7 @@ export class Product
                 prodType: {
                     type: DataTypes.ENUM('solid', 'liquid'),
                     allowNull: false,
+                    field: 'prodType',
                 },
                 price: {
                     type: DataTypes.DECIMAL(12, 2),
@@ -58,23 +43,43 @@ export class Product
                 companyId: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'companyId',
                 },
                 warehouseId: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'warehouseId',
+                },
+                createdAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'createdAt',
+                },
+                updatedAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'updatedAt',
+                },
+                deletedAt: {
+                    type: DataTypes.DATE,
+                    allowNull: true,
+                    field: 'deletedAt',
                 },
                 modifiedBy: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'modifiedBy',
                 },
             },
             {
                 sequelize,
-                modelName: 'Product',
                 tableName: 'products',
+                timestamps: true,
                 paranoid: true,
             },
         );
         return Product;
     }
 }
+
+export default Product;

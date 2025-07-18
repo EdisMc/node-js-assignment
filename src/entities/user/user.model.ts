@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 
-interface UserAttributes {
+export interface UserProperties {
     id: string;
     email: string;
     password: string;
@@ -11,24 +11,10 @@ interface UserAttributes {
     modifiedBy: string;
 }
 
-type UserCreationAttributes = Optional<
-    UserAttributes,
-    'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
->;
-
-export class User
-    extends Model<UserAttributes, UserCreationAttributes>
-    implements UserAttributes
-{
-    public id!: string;
-    public email!: string;
-    public password!: string;
-    public companyId!: string;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-    public readonly deletedAt?: Date;
-    public modifiedBy!: string;
-
+export class User extends Model<
+    UserProperties,
+    Optional<UserProperties, 'id'>
+> {
     public static initModel(sequelize: Sequelize): typeof User {
         User.init(
             {
@@ -49,19 +35,38 @@ export class User
                 companyId: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'companyId',
+                },
+                createdAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'createdAt',
+                },
+                updatedAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'updatedAt',
+                },
+                deletedAt: {
+                    type: DataTypes.DATE,
+                    allowNull: true,
+                    field: 'deletedAt',
                 },
                 modifiedBy: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'modifiedBy',
                 },
             },
             {
                 sequelize,
-                modelName: 'User',
                 tableName: 'users',
+                timestamps: true,
                 paranoid: true,
             },
         );
         return User;
     }
 }
+
+export default User;

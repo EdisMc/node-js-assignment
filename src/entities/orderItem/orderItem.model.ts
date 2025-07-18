@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 
-interface OrderItemAttributes {
+export interface OrderItemProperties {
     id: string;
     quantity: number;
     productId: string;
@@ -10,23 +10,10 @@ interface OrderItemAttributes {
     modifiedBy: string;
 }
 
-type OrderItemCreationAttributes = Optional<
-    OrderItemAttributes,
-    'id' | 'updatedAt' | 'deletedAt'
->;
-
-export class OrderItem
-    extends Model<OrderItemAttributes, OrderItemCreationAttributes>
-    implements OrderItemAttributes
-{
-    public id!: string;
-    public quantity!: number;
-    public productId!: string;
-    public orderId!: string;
-    public readonly updatedAt!: Date;
-    public readonly deletedAt?: Date;
-    public modifiedBy!: string;
-
+export class OrderItem extends Model<
+    OrderItemProperties,
+    Optional<OrderItemProperties, 'id'>
+> {
     public static initModel(sequelize: Sequelize): typeof OrderItem {
         OrderItem.init(
             {
@@ -42,20 +29,33 @@ export class OrderItem
                 productId: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'productId',
                 },
                 orderId: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'orderId',
+                },
+                updatedAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'updatedAt',
+                },
+                deletedAt: {
+                    type: DataTypes.DATE,
+                    allowNull: true,
+                    field: 'deletedAt',
                 },
                 modifiedBy: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'modifiedBy',
                 },
             },
             {
                 sequelize,
-                modelName: 'OrderItem',
                 tableName: 'order_items',
+                timestamps: true,
                 paranoid: true,
                 createdAt: false,
             },
@@ -63,3 +63,5 @@ export class OrderItem
         return OrderItem;
     }
 }
+
+export default OrderItem;

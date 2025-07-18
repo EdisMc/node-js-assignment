@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 
-interface InvoiceAttributes {
+export interface InvoiceProperties {
     id: string;
     issueDate: Date;
     orderId: string;
@@ -10,23 +10,10 @@ interface InvoiceAttributes {
     modifiedBy: string;
 }
 
-type InvoiceCreationAttributes = Optional<
-    InvoiceAttributes,
-    'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
->;
-
-export class Invoice
-    extends Model<InvoiceAttributes, InvoiceCreationAttributes>
-    implements InvoiceAttributes
-{
-    public id!: string;
-    public issueDate!: Date;
-    public orderId!: string;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-    public readonly deletedAt?: Date;
-    public modifiedBy!: string;
-
+export class Invoice extends Model<
+    InvoiceProperties,
+    Optional<InvoiceProperties, 'id'>
+> {
     public static initModel(sequelize: Sequelize): typeof Invoice {
         Invoice.init(
             {
@@ -38,23 +25,43 @@ export class Invoice
                 issueDate: {
                     type: DataTypes.DATE,
                     allowNull: false,
+                    field: 'issueDate',
                 },
                 orderId: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'orderId',
+                },
+                createdAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'createdAt',
+                },
+                updatedAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'updatedAt',
+                },
+                deletedAt: {
+                    type: DataTypes.DATE,
+                    allowNull: true,
+                    field: 'deletedAt',
                 },
                 modifiedBy: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'modifiedBy',
                 },
             },
             {
                 sequelize,
-                modelName: 'Invoice',
                 tableName: 'invoices',
+                timestamps: true,
                 paranoid: true,
             },
         );
         return Invoice;
     }
 }
+
+export default Invoice;

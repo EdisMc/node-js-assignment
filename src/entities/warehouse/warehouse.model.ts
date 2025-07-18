@@ -5,7 +5,7 @@ export enum SupportType {
     LIQUID = 'liquid',
 }
 
-interface WarehouseAttributes {
+export interface WarehouseProperties {
     id: string;
     name: string;
     location: string;
@@ -17,25 +17,10 @@ interface WarehouseAttributes {
     modifiedBy: string;
 }
 
-type WarehouseCreationAttributes = Optional<
-    WarehouseAttributes,
-    'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
->;
-
-export class Warehouse
-    extends Model<WarehouseAttributes, WarehouseCreationAttributes>
-    implements WarehouseAttributes
-{
-    public id!: string;
-    public name!: string;
-    public location!: string;
-    public companyId!: string;
-    public supportType!: SupportType;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-    public readonly deletedAt?: Date;
-    public modifiedBy!: string;
-
+export class Warehouse extends Model<
+    WarehouseProperties,
+    Optional<WarehouseProperties, 'id'>
+> {
     public static initModel(sequelize: Sequelize): typeof Warehouse {
         Warehouse.init(
             {
@@ -55,23 +40,43 @@ export class Warehouse
                 companyId: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'companyId',
                 },
                 supportType: {
                     type: DataTypes.ENUM('solid', 'liquid'),
                     allowNull: false,
+                    field: 'supportType',
+                },
+                createdAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'createdAt',
+                },
+                updatedAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'updatedAt',
+                },
+                deletedAt: {
+                    type: DataTypes.DATE,
+                    allowNull: true,
+                    field: 'deletedAt',
                 },
                 modifiedBy: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'modifiedBy',
                 },
             },
             {
                 sequelize,
-                modelName: 'Warehouse',
                 tableName: 'warehouses',
+                timestamps: true,
                 paranoid: true,
             },
         );
         return Warehouse;
     }
 }
+
+export default Warehouse;

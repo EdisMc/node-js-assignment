@@ -1,35 +1,11 @@
-import { sequelize } from '../config/database.js';
-import { Company } from './Company.js';
-import { Invoice } from './Invoice.js';
-import { Order, OrderType } from './Order.js';
-import { OrderItem } from './OrderItem.js';
-import { Partner, PartnerType } from './Partner.js';
-import { Product } from './Product.js';
-import { User } from './User.js';
-import { SupportType, Warehouse } from './Warehouse.js';
-
-Company.initModel(sequelize);
-User.initModel(sequelize);
-Warehouse.initModel(sequelize);
-Product.initModel(sequelize);
-Partner.initModel(sequelize);
-Order.initModel(sequelize);
-OrderItem.initModel(sequelize);
-Invoice.initModel(sequelize);
-
-export {
-    Company,
-    User,
-    Warehouse,
-    Product,
-    Partner,
-    Order,
-    OrderItem,
-    Invoice,
-    SupportType,
-    PartnerType,
-    OrderType,
-};
+import { Company } from '../entities/company/company.model.js';
+import { Invoice } from '../entities/invoice/invoice.model.js';
+import { Order } from '../entities/order/order.model.js';
+import { OrderItem } from '../entities/orderItem/orderItem.model.js';
+import { Partner } from '../entities/partner/partner.model.js';
+import { Product } from '../entities/product/product.model.js';
+import User from '../entities/user/user.model.js';
+import { Warehouse } from '../entities/warehouse/warehouse.model.js';
 
 export function setupAssociations() {
     Company.hasMany(User, {foreignKey: 'companyId'});
@@ -76,5 +52,3 @@ export function setupAssociations() {
 
     Invoice.belongsTo(Order, {foreignKey: 'orderId'});
 }
-
-setupAssociations();

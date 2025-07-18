@@ -5,7 +5,7 @@ export enum OrderType {
     SHIPMENT = 'shipment',
 }
 
-interface OrderAttributes {
+export interface OrderProperties {
     id: string;
     warehouseId: string;
     partnerId: string;
@@ -18,26 +18,10 @@ interface OrderAttributes {
     modifiedBy: string;
 }
 
-type OrderCreationAttributes = Optional<
-    OrderAttributes,
-    'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
->;
-
-export class Order
-    extends Model<OrderAttributes, OrderCreationAttributes>
-    implements OrderAttributes
-{
-    public id!: string;
-    public warehouseId!: string;
-    public partnerId!: string;
-    public companyId!: string;
-    public date!: Date;
-    public type!: OrderType;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-    public readonly deletedAt?: Date;
-    public modifiedBy!: string;
-
+export class Order extends Model<
+    OrderProperties,
+    Optional<OrderProperties, 'id'>
+> {
     public static initModel(sequelize: Sequelize): typeof Order {
         Order.init(
             {
@@ -49,14 +33,17 @@ export class Order
                 warehouseId: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'warehouseId',
                 },
                 partnerId: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'partnerId',
                 },
                 companyId: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'companyId',
                 },
                 date: {
                     type: DataTypes.DATE,
@@ -66,18 +53,36 @@ export class Order
                     type: DataTypes.ENUM('delivery', 'shipment'),
                     allowNull: false,
                 },
+                createdAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'createdAt',
+                },
+                updatedAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW,
+                    field: 'updatedAt',
+                },
+                deletedAt: {
+                    type: DataTypes.DATE,
+                    allowNull: true,
+                    field: 'deletedAt',
+                },
                 modifiedBy: {
                     type: DataTypes.UUID,
                     allowNull: false,
+                    field: 'modifiedBy',
                 },
             },
             {
                 sequelize,
-                modelName: 'Order',
                 tableName: 'orders',
+                timestamps: true,
                 paranoid: true,
             },
         );
         return Order;
     }
 }
+
+export default Order;
