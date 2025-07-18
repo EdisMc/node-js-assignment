@@ -9,13 +9,12 @@ export const ProductCreateSchema = z.object({
         error: 'Product type must be solid or liquid',
     }),
     price: z.number().positive('Price must be positive'),
-    companyId: z.string().uuid('Invalid company ID'),
-    warehouseId: z.string().uuid('Invalid warehouse ID'),
-    modifiedBy: z.string().uuid('Invalid user ID'),
+    companyId: z.uuid('Invalid company ID'),
+    warehouseId: z.uuid('Invalid warehouse ID'),
 });
 
 export const ProductUpdateSchema = z.object({
-    id: z.string().uuid('Invalid product ID'),
+    id: z.uuid('Invalid product ID'),
     name: z
         .string()
         .min(1, 'Product name is required')
@@ -24,13 +23,12 @@ export const ProductUpdateSchema = z.object({
         error: 'Product type must be solid or liquid',
     }),
     price: z.number().positive('Price must be positive'),
-    companyId: z.string().uuid('Invalid company ID'),
-    warehouseId: z.string().uuid('Invalid warehouse ID'),
-    modifiedBy: z.string().uuid('Invalid user ID'),
+    companyId: z.uuid('Invalid company ID'),
+    warehouseId: z.uuid('Invalid warehouse ID'),
 });
 
 export const ProductParamsSchema = z.object({
-    id: z.string().uuid('Invalid product ID'),
+    id: z.uuid('Invalid product ID'),
 });
 
 export type ProductCreateType = z.infer<typeof ProductCreateSchema>;

@@ -5,24 +5,22 @@ export const OrderItemCreateSchema = z.object({
         .number()
         .int('Quantity must be an integer')
         .positive('Quantity must be positive'),
-    productId: z.string().uuid('Invalid product ID'),
-    orderId: z.string().uuid('Invalid order ID'),
-    modifiedBy: z.string().uuid('Invalid user ID'),
+    productId: z.uuid('Invalid product ID'),
+    orderId: z.uuid('Invalid order ID'),
 });
 
 export const OrderItemUpdateSchema = z.object({
-    id: z.string().uuid('Invalid order item ID'),
+    id: z.uuid('Invalid order item ID'),
     quantity: z
         .number()
         .int('Quantity must be an integer')
         .positive('Quantity must be positive'),
-    productId: z.string().uuid('Invalid product ID'),
-    orderId: z.string().uuid('Invalid order ID'),
-    modifiedBy: z.string().uuid('Invalid user ID'),
+    productId: z.uuid('Invalid product ID'),
+    orderId: z.uuid('Invalid order ID'),
 });
 
 export const OrderItemParamsSchema = z.object({
-    id: z.string().uuid('Invalid order item ID'),
+    id: z.uuid('Invalid order item ID'),
 });
 
 export type OrderItemCreateType = z.infer<typeof OrderItemCreateSchema>;

@@ -9,15 +9,14 @@ export const WarehouseCreateSchema = z.object({
         .string()
         .min(1, 'Location is required')
         .max(255, 'Location too long'),
-    companyId: z.string().uuid('Invalid company ID'),
+    companyId: z.uuid('Invalid company ID'),
     supportType: z.enum(['solid', 'liquid'], {
         message: 'Support type must be solid or liquid',
     }),
-    modifiedBy: z.string().uuid('Invalid user ID'),
 });
 
 export const WarehouseUpdateSchema = z.object({
-    id: z.string().uuid('Invalid warehouse ID'),
+    id: z.uuid('Invalid warehouse ID'),
     name: z
         .string()
         .min(1, 'Warehouse name is required')
@@ -26,15 +25,14 @@ export const WarehouseUpdateSchema = z.object({
         .string()
         .min(1, 'Location is required')
         .max(255, 'Location too long'),
-    companyId: z.string().uuid('Invalid company ID'),
+    companyId: z.uuid('Invalid company ID'),
     supportType: z.enum(['solid', 'liquid'], {
         message: 'Support type must be solid or liquid',
     }),
-    modifiedBy: z.string().uuid('Invalid user ID'),
 });
 
 export const WarehouseParamsSchema = z.object({
-    id: z.string().uuid('Invalid warehouse ID'),
+    id: z.uuid('Invalid warehouse ID'),
 });
 
 export type WarehouseCreateType = z.infer<typeof WarehouseCreateSchema>;
